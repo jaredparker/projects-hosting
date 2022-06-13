@@ -1,0 +1,23 @@
+{
+  "name": "projects-hosting",
+  "version": "1.0.0",
+  "description": "App to automatically run & shut down web apps based on user traffic.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "Jared Parker",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "express-subdomain": "^1.0.5",
+    "http": "0.0.1-security",
+    "path": "^0.12.7",
+    "projects-db": "git+https://github.com/jaredparker/projects-db.git"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.1",
+    "nodemon": "^2.0.16"
+  }
+}
