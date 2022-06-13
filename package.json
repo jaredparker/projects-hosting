@@ -17,7 +17,9 @@
     "http": "0.0.1-security",
     "http-proxy-middleware": "^2.0.6",
     "path": "^0.12.7",
-    "projects-db": "file:../projects-db"
+    "projects-db": "file:../projects-db",
+    "tree-kill-promise": "^2.0.8",
+    "wait-port": "^0.2.9"
   },
   "devDependencies": {
     "dotenv": "^16.0.1",
