@@ -1,10 +1,11 @@
 
-const path      = require('path');
+const path      = require( 'path' );
 const http      = require('http');
-const express   = require('express');
+const express   = require( 'express' );
 const subdomain = require('express-subdomain');
 
 const db = require('projects-db');
+const ProjectManager = require( path.join(__dirname, './lib/projectManager.js') );
 
 if( process.env.NODE_ENV != 'production' ){ require('dotenv').config(); }
 
@@ -23,9 +24,14 @@ db.connect( uri, options );
 const app = express();
 const server = http.createServer(app);
 
+// Project Manager init
+
+const manager = new ProjectManager({
+});
+
 // Routes
 
-app.use(subdomain( `*`, (req, res, next) => res.send('Hello world!') ));
+app.use(subdomain( `*`, manager.middleware() ));
 
 // listen for requests
 server.listen( process.env.PORT || 3000, () => {

@@ -14,7 +14,7 @@
     "express-subdomain": "^1.0.5",
     "http": "0.0.1-security",
     "path": "^0.12.7",
-    "projects-db": "git+https://github.com/jaredparker/projects-db.git"
+    "projects-db": "file:../projects-db"
   },
   "devDependencies": {
     "dotenv": "^16.0.1",
