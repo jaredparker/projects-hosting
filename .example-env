@@ -1,2 +1,2 @@
 PORT=3000
-MANGO_DB_URI=mongodb+srv://<username>:<password>@<cluster>.<id>.mongodb.net/<db>
+MONGO_DB_URI=mongodb+srv://<username>:<password>@<cluster>.<id>.mongodb.net/<db>?retryWrites=true&w=majority
