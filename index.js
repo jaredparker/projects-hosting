@@ -1,5 +1,6 @@
 
 const path      = require( 'path' );
+const fs        = require( 'fs-extra' );
 const http      = require('http');
 const express   = require( 'express' );
 const subdomain = require('express-subdomain');
@@ -8,6 +9,10 @@ const db = require('projects-db');
 const ProjectManager = require( path.join(__dirname, './lib/projectManager.js') );
 
 if( process.env.NODE_ENV != 'production' ){ require('dotenv').config(); }
+
+// Clear workspace
+
+fs.remove( path.join( __dirname, 'temp' ) );
 
 // DataBase init
 
