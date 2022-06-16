@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Launching project... 🚀</title>
+    <link rel="icon" href="">
+
+    <noscript>
+        <meta http-equiv="refresh" content="2">
+    </noscript>
+
+    <style>
+        
+        * {
+            padding: 0;
+            margin: 0;
+
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+        }
+
+        .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+
+            text-align: center;
+
+            user-select: none;
+            pointer-events: none;
+
+            animation: reveal 3s;
+        }
+
+        @keyframes reveal {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .center > * {
+            margin: auto;
+            margin-bottom: 50px;
+        }
+
+        .background {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /**/
+
+        #title {
+            display: flex;
+            align-items: center;
+        }
+
+        #title::before,
+        #title::after {
+            display: block;
+            content: '';
+
+            width: 25px;
+            margin: 0 10px;
+            border-top: 2px solid grey;
+        }
+
+        #status {
+            color: grey;
+            animation: fade 1s ease-in infinite alternate;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: .1;
+            }
+        }
+
+        /* LOADING SPINNER */
+
+        .spinner-container {
+            width: 100px;
+            height: 100px;
+
+            position: relative;
+        }
+
+        .spinner,
+        .spinner::before,
+        .spinner::after {
+            border: 2px solid black;
+            /* border-top-color: transparent;
+            border-bottom-color: transparent; */
+            border-radius: 50%;
+
+            box-sizing: border-box;
+
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate( -50%, -50% );
+
+            animation: contract 1.5s ease infinite;
+        }
+
+        .spinner::before,
+        .spinner::after {
+            display: block;
+            content: '';
+        }
+
+        .spinner {
+            width: 100%;
+            height: 100%;
+            
+            border-top-color: transparent;
+            border-bottom-color: transparent;
+        }
+        .spinner::before {
+            width: 80%;
+            height: 80%;
+
+            animation-delay: .3s;
+        }
+        .spinner::after {
+            width: 50%;
+            height: 50%;
+
+            animation-delay: .5s;
+        }
+
+        @keyframes contract {
+            0% {
+                transform: translate( -50%, -50% ) scale(1) rotate(0deg);
+                opacity: .8;
+            }
+            50% {
+                transform: translate( -50%, -50% ) scale(.8) rotate(360deg);
+                opacity: .6;
+            }
+            100% {
+                transform: translate( -50%, -50% ) scale(1) rotate(360deg);
+                opacity: .6;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="center">
+        <div class="spinner-container">
+            <div class="spinner"></div>
+        </div>
+        
+        <p id="status">Please hold on</p>
+    </div>
+
+    <script>
+
+        const $status = document.querySelector('#status');
+
+        function reloadDelay(){
+            return setTimeout(function(){
+                window.location.reload(true);
+            }, 1500 );
+        }
+
+        async function onStateChange( event ){
+            console.log(event);
+            
+            try {
+                const data    = JSON.parse(event.data);
+                let text      = "";
+
+                switch (data.state) {
+                    case 'initialize':
+                        text = "Doing some preparation";
+                        break;
+                    case 'startup':
+                        text = "Any second now...";
+                        break;
+                    case 'ready':
+                        text = "Ready! You should be redirected shortly 🥳";
+                        break
+                    default:
+                        return;
+                }
+
+                $status.innerHTML = text;
+
+                if( data.state == 'ready' ){
+                    window.location.reload(true);
+                }
+
+            } catch {
+                reloadDelay();
+            }
+        }
+        
+        const ws = new WebSocket("ws://" + document.location.host + "/__loading_state__" );
+        
+        ws.onmessage = onStateChange;
+        ws.onerror   = reloadDelay;
+        ws.onclose   = reloadDelay;
+
+    </script>
+    
+</body>
+</html>

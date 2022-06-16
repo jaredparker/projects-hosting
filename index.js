@@ -31,11 +31,11 @@ const server = http.createServer(app);
 
 // Project Manager init
 
-const manager = new ProjectManager({
-});
+const manager = new ProjectManager();
 
 // Routes
 
+server.on( 'upgrade', manager.handleUpgrade() );
 app.use(subdomain( `*`, manager.middleware() ));
 
 // listen for requests

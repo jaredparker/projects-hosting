@@ -19,7 +19,8 @@
     "path": "^0.12.7",
     "projects-db": "file:../projects-db",
     "tree-kill-promise": "^2.0.8",
-    "wait-port": "^0.2.9"
+    "wait-port": "^0.2.9",
+    "ws": "^8.8.0"
   },
   "devDependencies": {
     "dotenv": "^16.0.1",
