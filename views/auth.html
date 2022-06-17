@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project password protected 🔑</title>
+    <link rel="icon" href="">
+
+    <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans:ital@0;1&display=swap');
+
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: 'Balsamiq Sans', Arial, Helvetica, sans-serif;
+
+            box-sizing: border-box;
+        }
+        
+        body {
+            height: 100vh;
+        }
+
+        .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+
+            text-align: center;
+
+            animation: reveal 3s;
+        }
+        @keyframes reveal {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .center > * {
+            margin: auto;
+            margin-bottom: 50px;
+        }
+
+        #entry {
+            width: 20rem;
+            padding: .75rem 1rem;
+            font-size: 1.5rem;
+
+            text-align: center;
+
+            border: 5px solid lightgrey;
+            border-radius: 10px;
+        }
+        #entry:focus {
+            outline: none;
+            border-color: lightseagreen;
+        }
+
+        .shake {        
+            animation: shake .1s linear infinite;
+        }
+        @keyframes shake {
+            0% {
+                margin-left: 0px;
+                margin-right: 0px;
+            }
+            25% {
+                margin-left: 10px;
+            }
+            50% {
+                margin-left: 0px;
+                margin-right: 0px;
+            }
+            75% {
+                margin-right: 10px;
+            }
+            100% {
+                margin-left: 0px;
+                margin-right: 0px;
+            }
+        }
+
+        #submit {
+            display: block;
+
+            height: 4rem;
+
+            padding: .75rem 1.5rem;
+            font-size: 1.2rem;
+
+            opacity: 1;
+
+            color: lightseagreen;
+            background-color: transparent;
+            border: 5px solid lightseagreen;
+            border-radius: 50px;
+
+            transition: opacity .3s, color .3s, background-color .3s, border-color .3s;
+        }
+        #submit:focus,
+        #submit:hover {
+            outline: none;
+            color: white;
+            background-color: lightseagreen;
+
+            cursor: pointer;
+        }
+        #entry:placeholder-shown + #submit {
+            opacity: 0;
+
+            user-select: none;
+            pointer-events: none;
+        }
+
+        #submit::after {
+            display: block;
+            content: 'hello';
+        }
+
+        .spinner {
+            display: none;
+
+            width: 4rem;
+            height: 4rem;
+
+            border: 5px solid lightgrey;
+            border-radius: 50%;
+            border-bottom-color: transparent;
+            border-left-color: transparent;
+
+            animation: spin .5s linear infinite;
+        }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #submit:disabled {
+            display: none;
+        }
+        #submit:disabled + .spinner {
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+
+    <form class="center" id="password-form">
+        <p>This project requires a password to access</p>
+        <input id="entry" type="password" placeholder="enter password"></input>
+        <input id="submit" type="submit" value="Open Project"></input>
+        <div class="spinner"></div>
+    </form>
+
+    <script>
+
+        const form = document.getElementById('password-form');
+        const entr = document.getElementById('entry');
+        const bttn = document.getElementById('submit')
+
+        async function requestAuth( password ){
+            if( bttn.disabled ) return;
+            bttn.disabled = true;
+            entr.disabled = true;
+            
+            const options = {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST',
+                credentials: 'include',
+                body: JSON.stringify({
+                    password
+                })
+            }
+
+            const res = await fetch( '/__auth__', options );
+
+            // Unauthorized
+            if( res.status == 401 ){
+                bttn.disabled = false;
+                entr.disabled = false;
+                entr.classList.add('shake');
+                setTimeout( _ => entr.classList.remove('shake'), 300 );
+                return;
+            }
+
+            // Password correct
+            if( res.status == 200 ){
+                window.location.reload(true);
+            }
+        }
+        
+        form.addEventListener( 'submit', e => { e.preventDefault(); requestAuth(entr.value); } );
+        entr.addEventListener( 'click', function(){ this.setSelectionRange( 0, this.value.length ); } );
+
+    </script>
+    
+</body>
+</html>

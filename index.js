@@ -1,9 +1,11 @@
 
-const path      = require( 'path' );
-const fs        = require( 'fs-extra' );
-const http      = require('http');
-const express   = require( 'express' );
-const subdomain = require('express-subdomain');
+const path         = require('path');
+const fs           = require('fs-extra');
+const http         = require('http');
+const express      = require('express');
+const bodyParser   = require('body-parser');
+const cookieParser = require('cookie-parser');
+const subdomain    = require('express-subdomain');
 
 const db = require('projects-db');
 const ProjectManager = require( path.join(__dirname, './lib/projectManager.js') );
@@ -35,8 +37,11 @@ const manager = new ProjectManager();
 
 // Routes
 
-server.on( 'upgrade', manager.handleUpgrade() );
-app.use(subdomain( `*`, manager.middleware() ));
+app.use(bodyParser.json());
+app.use(cookieParser());
+
+server.on( 'upgrade', manager.upgradeMiddleware() );
+app.use(subdomain( `*`, manager.projectMiddleware() ));
 
 // listen for requests
 server.listen( process.env.PORT || 3000, () => {
